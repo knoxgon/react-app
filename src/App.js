@@ -15,7 +15,9 @@ export default class App extends React.Component {
   }
 
   fetchInput = () => {
-    fetch('http://localhost:3000/clinput').then(response => { return response.json() }).then(result => this.setState({ clientInputs: result }));
+    fetch('http://localhost:3000/clinput')
+    .then(response => { return response.json() })
+    .then(result => this.setState({ clientInputs: result }));
   }
 
   componentDidMount() {
