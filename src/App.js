@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import Product from './Product/Product';
 import Table from 'react-bootstrap/Table';
+import Login from './Login/Login';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -41,6 +42,7 @@ export default class App extends React.Component {
             </Product>
           })}
         </Table>
+        <Login></Login>
       </div>
     );
   }
