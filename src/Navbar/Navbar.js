@@ -1,35 +1,63 @@
 import React from 'react';
-import Login from '../Login/Login';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import Home from '../Home/Home';
+import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse, MDBNavItem, MDBNavLink } from 'mdbreact';
+import Login from '../Login/Login';
 import Offerts from '../Offerts/Offerts';
+import Home from '../Home/Home';
 
-export default class Navbar extends React.Component {
+class Navbar extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
+    this.state = {
+      collapse: false,
+    };
+    this.onClick = this.onClick.bind(this);
+  }
+
+  onClick() {
+    this.setState({
+      collapse: !this.state.collapse,
+    });
   }
 
   render() {
     return (
-      <Router>
-        <div>
-          <h2>Welcome to Our Offerts</h2>
-          <nav className="navbar navbar-expand-lg navbar-light bg-light">
-            <ul className="navbar-nav mr-auto">
-              <li><Link to={'/'} className="nav-link"> Home </Link></li>
-              <li><Link to={'/login'} className="nav-link">Login</Link></li>
-              <li><Link to={'/offerts'} className="nav-link">Offerts</Link></li>
-            </ul>
-          </nav>
-          <hr />
+      <div>
+        <Router>
+          <header>
+            <MDBNavbar style={{ backgroundColor: '#00BFFF' }} dark expand="md" scrolling fixed="top">
+              <MDBNavbarBrand>
+                <MDBNavLink to={'/'}>
+                  <strong>MassNet</strong>
+                </MDBNavLink>
+              </MDBNavbarBrand>
+              <MDBNavbarToggler onClick={this.onClick} />
+              <MDBCollapse isOpen={this.state.collapse} navbar>
+                <MDBNavbarNav left>
+                  <MDBNavItem active>
+                    <MDBNavLink to={'/'}>Home</MDBNavLink>
+                  </MDBNavItem>
+                  <MDBNavItem>
+                    <MDBNavLink to={'/offerts'}>Offerts</MDBNavLink>
+                  </MDBNavItem>
+                </MDBNavbarNav>
+                <MDBNavbarNav right>
+                  <MDBNavItem>
+                    <MDBNavLink to={'/login'}>Login</MDBNavLink>
+                  </MDBNavItem>
+                </MDBNavbarNav>
+              </MDBCollapse>
+            </MDBNavbar>
+          </header>
           <Switch>
             <Route exact path='/' component={Home} />
             <Route path='/offerts' component={Offerts} />
             <Route path='/login' component={Login} />
           </Switch>
-        </div>
-      </Router>
+        </Router>
+      </div>
     );
   }
 }
+
+export default Navbar;

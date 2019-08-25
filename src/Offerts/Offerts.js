@@ -13,7 +13,7 @@ export default class Offerts extends React.Component {
   }
 
   fetchInput = () => {
-    fetch('http://localhost:3000/clinput')
+    fetch('http://192.168.1.8:3000/clinput')
       .then(response => { return response.json() })
       .then(result => this.setState({ clientInputs: result }));
   }
