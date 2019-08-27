@@ -1,17 +1,32 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse, MDBNavItem, MDBNavLink } from 'mdbreact';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse, MDBNavItem, MDBNavLink, MDBContainer } from 'mdbreact';
 import Login from '../Login/Login';
 import Offerts from '../Offerts/Offerts';
 import Home from '../Home/Home';
+import Profile from '../Profile/Profile';
+
+import { history } from '../_helpers';
+import { authenticationService } from '../_services';
+import { PrivateRoute } from '../_imp_components';
 
 class Navbar extends React.Component {
   constructor(props) {
     super(props);
+    this.props = props;
     this.state = {
       collapse: false,
+      currentUser: null
     };
-    this.onClick = this.onClick.bind(this);
+  }
+
+  componentDidMount() {
+    authenticationService.currentUser.subscribe(x => this.setState({ currentUser: x }));
+  }
+
+  logout() {
+    authenticationService.logout();
+    history.push('/login');
   }
 
   onClick() {
@@ -21,41 +36,72 @@ class Navbar extends React.Component {
   }
 
   render() {
+    const NoMatch = ({ location }) => (
+      <div className="container">
+        <h3><code>{location.pathname} Not found</code></h3>
+      </div>
+    )
+
+    const currentUser = this.state.currentUser;
+
     return (
-      <div>
-        <Router>
-          <header>
-            <MDBNavbar style={{ backgroundColor: '#00BFFF' }} dark expand="md" scrolling fixed="top">
-              <MDBNavbarBrand>
-                <MDBNavLink to={'/'}>
-                  <strong>MassNet</strong>
-                </MDBNavLink>
-              </MDBNavbarBrand>
-              <MDBNavbarToggler onClick={this.onClick} />
-              <MDBCollapse isOpen={this.state.collapse} navbar>
-                <MDBNavbarNav left>
-                  <MDBNavItem active>
-                    <MDBNavLink to={'/'}>Home</MDBNavLink>
-                  </MDBNavItem>
-                  <MDBNavItem>
-                    <MDBNavLink to={'/offerts'}>Offerts</MDBNavLink>
-                  </MDBNavItem>
-                </MDBNavbarNav>
-                <MDBNavbarNav right>
-                  <MDBNavItem>
-                    <MDBNavLink to={'/login'}>Login</MDBNavLink>
-                  </MDBNavItem>
-                </MDBNavbarNav>
-              </MDBCollapse>
-            </MDBNavbar>
-          </header>
+      <>
+        <Router history={history}>
+          <MDBNavbar style={{ backgroundColor: '#00BFFF' }} dark expand="md" scrolling fixed="top">
+            <MDBNavbarBrand>
+              <MDBNavLink to='/'>
+                <strong>BidStacker</strong>
+              </MDBNavLink>
+            </MDBNavbarBrand>
+            <MDBNavbarToggler onClick={this.onClick} />
+            <MDBCollapse isOpen={this.state.collapse} navbar>
+
+              {currentUser &&
+                <>
+                  <MDBNavbarNav left>
+                    <MDBNavItem active>
+                      <MDBNavLink to='/'>Home</MDBNavLink>
+                    </MDBNavItem>
+                    <MDBNavItem>
+                      <MDBNavLink to='/offerts'>Offerts</MDBNavLink>
+                    </MDBNavItem>
+                  </MDBNavbarNav>
+                  <MDBNavbarNav right>
+                    <MDBNavItem>
+                      <MDBNavLink to='/profile'>Profile</MDBNavLink>
+                    </MDBNavItem>
+                    <MDBNavItem>
+                      <MDBNavLink to='/logout' onClick={this.logout}>Logout</MDBNavLink>
+                    </MDBNavItem>
+                  </MDBNavbarNav>
+                </>
+              }
+              {!currentUser &&
+                <>
+                  <MDBNavbarNav left>
+                    <MDBNavItem>
+                      <MDBNavLink to='/' component={Home}>Home</MDBNavLink>
+                    </MDBNavItem>
+                  </MDBNavbarNav>
+                  <MDBNavbarNav right>
+                    <MDBNavItem>
+                      <MDBNavLink to='/login' component={Login}>Login</MDBNavLink>
+                    </MDBNavItem>
+                  </MDBNavbarNav>
+                </>
+              }
+            </MDBCollapse>
+          </MDBNavbar>
           <Switch>
+            <PrivateRoute path='/offerts' component={Offerts} />
+            <PrivateRoute path='/profile' component={Profile} />
             <Route exact path='/' component={Home} />
-            <Route path='/offerts' component={Offerts} />
             <Route path='/login' component={Login} />
+            <Route path='/logout' component={Login} />
+            <Route component={NoMatch} />
           </Switch>
         </Router>
-      </div>
+      </>
     );
   }
 }

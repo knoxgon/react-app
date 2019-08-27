@@ -1,6 +1,7 @@
 import React from 'react';
 import Table from 'react-bootstrap/Table';
 import Product from '../Product/Product';
+import { handleResponse, authHeader } from '../_helpers';
 
 export default class Offerts extends React.Component {
   constructor(props) {
@@ -13,8 +14,12 @@ export default class Offerts extends React.Component {
   }
 
   fetchInput = () => {
-    fetch('http://192.168.1.8:3000/clinput')
-      .then(response => { return response.json() })
+    fetch('http://192.168.1.8:3000/clinput', {
+      method: 'GET',
+      headers: new Headers(
+        authHeader())
+    })
+      .then(handleResponse)
       .then(result => this.setState({ clientInputs: result }));
   }
 
@@ -41,7 +46,7 @@ export default class Offerts extends React.Component {
             </tr>
           </thead>
           {this.state.clientInputs.map((item, index) => {
-            return <Product i={index + 1} owner={item.username} productName={item.productName} branch={item.branch} terms={item.terms} amount={item.amount} >
+            return <Product i={index + 1} owner={item.username} productName={item.productName} branch={item.branch} terms={item.terms} amount={item.amount} key={index} >
             </Product>
           })}
         </Table>

@@ -4,13 +4,16 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^4.3.1",
+    "formik": "^1.5.8",
+    "history": "^4.9.0",
     "mdbreact": "^4.19.1",
     "react": "^16.9.0",
     "react-bootstrap": "^1.0.0-beta.11",
     "react-dom": "^16.9.0",
     "react-fontawesome": "^1.6.1",
     "react-router-dom": "^5.0.1",
-    "react-scripts": "3.1.1"
+    "react-scripts": "3.1.1",
+    "yup": "^0.27.0"
   },
   "scripts": {
     "start": "set PORT=3333 && react-scripts start",

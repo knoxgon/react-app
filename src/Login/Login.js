@@ -1,86 +1,79 @@
 import React from 'react';
 import { MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn } from 'mdbreact';
 
+import { Formik, Field, Form, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+
+import { authenticationService } from '../_services';
+
+
 export default class Login extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
 
-    this.state = {
-      username: '',
-      password: ''
+    if (authenticationService.currentUserValue) {
+      this.props.history.push('/');
     }
   }
 
   handleInputChange = (e) => {
     this.setState({ [e.target.id]: e.target.value });
   }
-  handleSubmit = (event) => {
-
-    fetch('http://192.168.1.8:3000/login', {
-      method: 'POST',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify({ 'username': this.state.username, 'password': this.state.password })
-    })
-      .then(resp => {
-        return resp.json();
-      })
-      .then(resp => { console.log(resp) })
-      .catch(err => console.log(err.message))
-  }
 
   render() {
     return (
-      <MDBContainer>
-        <MDBRow>
-          <MDBCol md="6">
-            <form onSubmit={this.handleSubmit}>
-              <p className="h5 text-center mb-4">Sign in</p>
-              <div className="grey-text">
-                <MDBInput
-                  name="username"
-                  label="Type your username/email"
-                  icon="user"
-                  group
-                  type="text"
-                  validate
-                  error="wrong"
-                  success="right"
-                  id="username"
-                  onChange={this.handleInputChange}
-                  value={this.state.username}
-                />
-                <MDBInput
-                  label="Type your password"
-                  icon="lock"
-                  name="password"
-                  htmlFor=""
-                  onChange={this.handleInputChange}
-                  value={this.state.password}
-                  id="password"
-                  group
-                  type="password"
-                  validate
-                />
-              </div>
-              <div className="text-center">
-                <MDBBtn>Login</MDBBtn>
-              </div>
-            </form>
-          </MDBCol>
-        </MDBRow>
-      </MDBContainer>
+      <div className="row">
+        <Formik
+          initialValues={{
+            username: '',
+            password: ''
+          }}
+          validationSchema={Yup.object().shape({
+            username: Yup.string().required('Username is required'),
+            password: Yup.string().required('Password is required')
+          })}
+          onSubmit={({ username, password }, { setStatus, setSubmitting }) => {
+            setStatus();
+            authenticationService.login(username, password)
+              .then(
+                user => {
+                  const { from } = this.props.location.state || { from: { pathname: "/" } };
+                  this.props.history.push(from);
+                },
+                error => {
+                  setSubmitting(false);
+                  setStatus(error);
+                }
+              );
+          }}
+          render={({ errors, status, touched, isSubmitting }) => (
+            <MDBContainer>
+              <Form>
+                <div className="form-group">
+                  <label htmlFor="username">Username</label>
+                  <Field id="uname-field" name="username" type="text" className={'form-control' + (errors.username && touched.username ? ' is-invalid' : '')} />
+                  <ErrorMessage name="username" component="div" className="invalid-feedback" />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="password">Password</label>
+                  <Field id="psw-field" name="password" type="password" className={'form-control' + (errors.password && touched.password ? ' is-invalid' : '')} />
+                  <ErrorMessage name="password" component="div" className="invalid-feedback" />
+                </div>
+                <div className="form-group">
+                  <button type="submit" className="btn btn-primary" disabled={isSubmitting}>Login</button>
+                  {isSubmitting &&
+                    <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                  }
+                </div>
+                {status &&
+                  <div className={'alert alert-danger'}>{status}</div>
+                }
+              </Form>
+            </MDBContainer>
+          )}
+        ></Formik>
+      </div>
     );
-    {/*<div>
-        <form onSubmit={this.handleSubmit}>
-          <label htmlFor="username">Username: </label>
-          <input name="username" onChange={this.handleInputChange} value={this.state.username} type="text" id="username" placeholder="username"></input>
-          <br></br>
-          <label htmlFor="password">Password: </label>
-          <input name="password" onChange={this.handleInputChange} value={this.state.password} type="password" id="password" placeholder="password"></input>
-          <br></br>
-          <button>Login</button>
-        </form>
-    </div>*/}
   }
 }
