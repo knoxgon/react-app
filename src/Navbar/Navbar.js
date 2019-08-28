@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse, MDBNavItem, MDBNavLink, MDBContainer } from 'mdbreact';
+import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse, MDBNavItem, MDBNavLink } from 'mdbreact';
 import Login from '../Login/Login';
 import Offerts from '../Offerts/Offerts';
 import Home from '../Home/Home';
@@ -29,7 +29,7 @@ class Navbar extends React.Component {
     history.push('/login');
   }
 
-  onClick() {
+  onClick = () => {
     this.setState({
       collapse: !this.state.collapse,
     });
