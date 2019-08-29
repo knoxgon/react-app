@@ -1,5 +1,5 @@
 import React from 'react';
-import { MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn } from 'mdbreact';
+import { MDBContainer } from 'mdbreact';
 
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -38,12 +38,13 @@ export default class Login extends React.Component {
             authenticationService.login(username, password)
               .then(
                 user => {
+                  setSubmitting(true);
                   const { from } = this.props.location.state || { from: { pathname: "/" } };
                   this.props.history.push(from);
                 },
                 error => {
+                  setStatus('Connection error');
                   setSubmitting(false);
-                  setStatus(error);
                 }
               );
           }}

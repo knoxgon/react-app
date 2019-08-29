@@ -11,3 +11,8 @@
   position: relative;
 }
 */
+
+.user-info-cont {
+  display: block;
+  align-items: stretch;
+}

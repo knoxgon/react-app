@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse, MDBNavItem, MDBNavLink, MDBContainer } from 'mdbreact';
+import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse, MDBNavItem, MDBNavLink } from 'mdbreact';
 import Login from '../Login/Login';
 import Offerts from '../Offerts/Offerts';
 import Home from '../Home/Home';
@@ -9,6 +9,7 @@ import Profile from '../Profile/Profile';
 import { history } from '../_helpers';
 import { authenticationService } from '../_services';
 import { PrivateRoute } from '../_imp_components';
+import { UnMatched } from '../helpers/NoMatch';
 
 class Navbar extends React.Component {
   constructor(props) {
@@ -29,19 +30,13 @@ class Navbar extends React.Component {
     history.push('/login');
   }
 
-  onClick() {
+  onClick = () => {
     this.setState({
       collapse: !this.state.collapse,
     });
   }
 
   render() {
-    const NoMatch = ({ location }) => (
-      <div className="container">
-        <h3><code>{location.pathname} Not found</code></h3>
-      </div>
-    )
-
     const currentUser = this.state.currentUser;
 
     return (
@@ -98,7 +93,7 @@ class Navbar extends React.Component {
             <Route exact path='/' component={Home} />
             <Route path='/login' component={Login} />
             <Route path='/logout' component={Login} />
-            <Route component={NoMatch} />
+            <Route component={UnMatched} />
           </Switch>
         </Router>
       </>

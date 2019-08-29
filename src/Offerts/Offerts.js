@@ -1,6 +1,7 @@
 import React from 'react';
 import Table from 'react-bootstrap/Table';
 import Product from '../Product/Product';
+
 import { handleResponse, authHeader } from '../_helpers';
 
 export default class Offerts extends React.Component {
