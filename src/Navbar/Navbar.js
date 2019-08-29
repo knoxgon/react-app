@@ -9,6 +9,7 @@ import Profile from '../Profile/Profile';
 import { history } from '../_helpers';
 import { authenticationService } from '../_services';
 import { PrivateRoute } from '../_imp_components';
+import { UnMatched } from '../helpers/NoMatch';
 
 class Navbar extends React.Component {
   constructor(props) {
@@ -36,12 +37,6 @@ class Navbar extends React.Component {
   }
 
   render() {
-    const NoMatch = ({ location }) => (
-      <div className="container">
-        <h3><code>{location.pathname} Not found</code></h3>
-      </div>
-    )
-
     const currentUser = this.state.currentUser;
 
     return (
@@ -98,7 +93,7 @@ class Navbar extends React.Component {
             <Route exact path='/' component={Home} />
             <Route path='/login' component={Login} />
             <Route path='/logout' component={Login} />
-            <Route component={NoMatch} />
+            <Route component={UnMatched} />
           </Switch>
         </Router>
       </>

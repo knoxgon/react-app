@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import Navbar from './Navbar/Navbar';
+import Footer from './Footer/Footer';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -10,8 +11,11 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <Navbar>
-      </Navbar>
+      <body>
+        <Navbar>
+        </Navbar>
+        <Footer></Footer>
+      </body>
     );
   }
 }
