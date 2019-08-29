@@ -8,6 +8,7 @@ export default class Profile extends React.Component {
     this.props = props;
 
     this.state = {
+
       username: '',
       fullname: '',
       email: ''
