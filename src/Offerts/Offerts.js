@@ -15,7 +15,7 @@ export default class Offerts extends React.Component {
   }
 
   fetchInput = () => {
-    fetch('http://192.168.1.8:3000/clinput', {
+    fetch(`${process.env.REACT_APP_BLINK}/clinput`, {
       method: 'GET',
       headers: new Headers(
         authHeader())

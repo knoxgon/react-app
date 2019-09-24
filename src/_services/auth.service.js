@@ -5,32 +5,46 @@ import { handleResponse } from '../_helpers';
 const currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('currentUser')));
 
 export const authenticationService = {
-  login,
+  loginClient,
+  loginCompany,
   logout,
   currentUser: currentUserSubject.asObservable(),
   get currentUserValue() { return currentUserSubject.value }
 };
 
-function login(username, password) {
+function loginClient(username, password) {
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, password })
   };
-
-  return fetch(`http://localhost:3000/login`, requestOptions)
+  
+  return fetch(process.env.REACT_APP_BLINK + '/login/client', requestOptions)
     .then(handleResponse)
     .then(user => {
-      // store user details and jwt token in local storage to keep user logged in between page refreshes
       localStorage.setItem('currentUser', JSON.stringify(user));
       currentUserSubject.next(user);
-
       return user;
-    });
+    })
+}
+
+function loginCompany(email, password) {
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  };
+  
+  return fetch(process.env.REACT_APP_BLINK + '/login/company', requestOptions)
+    .then(handleResponse)
+    .then(user => {
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      currentUserSubject.next(user);
+      return user;
+    })
 }
 
 function logout() {
-  // remove user from local storage to log user out
   localStorage.removeItem('currentUser');
   currentUserSubject.next(null);
 }

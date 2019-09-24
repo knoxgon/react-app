@@ -36,14 +36,9 @@
   background: #61dafb;
 }
 
-body * {
-  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif
-}
-
-body {
+.general-div {
   margin:0;
-  /*Making sure navbar isnt blocking*/
-  padding-top: 65px;  
+  padding-top: 65px;
   display:flex;
   flex-direction:column;
   justify-content:space-between;

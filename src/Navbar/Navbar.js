@@ -1,15 +1,23 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse, MDBNavItem, MDBNavLink } from 'mdbreact';
-import Login from '../Login/Login';
+import { Router, Switch, Route } from 'react-router-dom';
+import { MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse, MDBNavItem, MDBNavLink } from 'mdbreact';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faCoffee, faSignInAlt, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
+import LoginClient from '../Login/LoginClient';
+import LoginCompany from '../Login/LoginCompany';
 import Offerts from '../Offerts/Offerts';
 import Home from '../Home/Home';
-import Profile from '../Profile/Profile';
+// import Profile from '../Profile/Profile';
+//import ProfileCompany from '../Profile/ProfileCompany';
+//import ProfileClient from '../Profile/ProfileClient';
+import './Navbar.css';
 
 import { history } from '../_helpers';
 import { authenticationService } from '../_services';
 import { PrivateRoute } from '../_imp_components';
 import { UnMatched } from '../helpers/NoMatch';
+import RegisterCompany from '../Register/RegisterCompany';
+import OffertsCreate from '../OffertsCreate/OffertsCreate';
 
 class Navbar extends React.Component {
   constructor(props) {
@@ -27,7 +35,7 @@ class Navbar extends React.Component {
 
   logout() {
     authenticationService.logout();
-    history.push('/login');
+    history.push('/home');
   }
 
   onClick = () => {
@@ -45,7 +53,7 @@ class Navbar extends React.Component {
           <MDBNavbar style={{ backgroundColor: '#00BFFF' }} dark expand="md" scrolling fixed="top">
             <MDBNavbarBrand>
               <MDBNavLink to='/'>
-                <strong>BidStacker</strong>
+                <strong>SaurNet</strong>
               </MDBNavLink>
             </MDBNavbarBrand>
             <MDBNavbarToggler onClick={this.onClick} />
@@ -60,10 +68,13 @@ class Navbar extends React.Component {
                     <MDBNavItem>
                       <MDBNavLink to='/offerts'>Offerts</MDBNavLink>
                     </MDBNavItem>
+                    <MDBNavItem>
+                      <MDBNavLink to='/offerts-create'>Create offert</MDBNavLink>
+                    </MDBNavItem>
                   </MDBNavbarNav>
                   <MDBNavbarNav right>
                     <MDBNavItem>
-                      <MDBNavLink to='/profile'>Profile</MDBNavLink>
+                      {/* <MDBNavLink to='/profile'>Profile</MDBNavLink> */}
                     </MDBNavItem>
                     <MDBNavItem>
                       <MDBNavLink to='/logout' onClick={this.logout}>Logout</MDBNavLink>
@@ -79,8 +90,24 @@ class Navbar extends React.Component {
                     </MDBNavItem>
                   </MDBNavbarNav>
                   <MDBNavbarNav right>
+                  <MDBNavItem>
+                  <MDBDropdown>
+                      <MDBDropdownToggle nav caret>Register
+                      </MDBDropdownToggle>
+                      <MDBDropdownMenu basic>
+                        <MDBNavLink to='/register/company' component={RegisterCompany}><MDBDropdownItem>Company</MDBDropdownItem></MDBNavLink>
+                      </MDBDropdownMenu>
+                    </MDBDropdown>
+                    </MDBNavItem>
                     <MDBNavItem>
-                      <MDBNavLink to='/login' component={Login}>Login</MDBNavLink>
+                    <MDBDropdown>
+                      <MDBDropdownToggle nav caret>Login
+                      </MDBDropdownToggle>
+                      <MDBDropdownMenu basic>
+                        <MDBNavLink to='/login/client' component={LoginClient}><MDBDropdownItem>Client</MDBDropdownItem></MDBNavLink>
+                        <MDBNavLink to='/login/company' component={LoginCompany}><MDBDropdownItem>Company</MDBDropdownItem></MDBNavLink>
+                      </MDBDropdownMenu>
+                    </MDBDropdown>
                     </MDBNavItem>
                   </MDBNavbarNav>
                 </>
@@ -89,10 +116,15 @@ class Navbar extends React.Component {
           </MDBNavbar>
           <Switch>
             <PrivateRoute path='/offerts' component={Offerts} />
-            <PrivateRoute path='/profile' component={Profile} />
+            <PrivateRoute path="/offerts-create" component={OffertsCreate}/>
+            <PrivateRoute path="/offerts-create" component={OffertsCreate}/>
+            <PrivateRoute path="/offerts-create" component={OffertsCreate}/>
+            {/* <PrivateRoute path='/profile' component={Profile} /> */}
             <Route exact path='/' component={Home} />
-            <Route path='/login' component={Login} />
-            <Route path='/logout' component={Login} />
+            <Route path='/login/client' component={LoginClient} />
+            <Route path='/login/company' component={LoginCompany} />
+            <Route path='/register/company' component={RegisterCompany} />
+            <Route path='/logout' component={Home} />
             <Route component={UnMatched} />
           </Switch>
         </Router>
